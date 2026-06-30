@@ -1,111 +1,84 @@
-# Laboratório AWS Elastic Beanstalk com Node.js e Express
+# LAB-Elastic-Beanstalk
 
 ## Objetivo
 
 Neste laboratório você irá:
 
-- Criar uma aplicação Node.js utilizando Express.
-- Testar a aplicação localmente.
-- Configurar o Elastic Beanstalk.
-- Criar um ambiente na AWS.
-- Realizar o deploy da aplicação.
-- Acessar a aplicação publicada na Internet.
+-   Criar uma aplicação Node.js utilizando Express.
+-   Testar a aplicação localmente.
+-   Configurar o AWS Elastic Beanstalk.
+-   Criar um ambiente na AWS.
+-   Realizar o deploy da aplicação.
+-   Acessar a aplicação publicada.
 
----
+------------------------------------------------------------------------
 
 # Arquitetura
 
-```text
-Node.js + Express
+``` text
+                 Desenvolvedor
+                       │
+                npm start (Local)
+                       │
+                       ▼
+                Elastic Beanstalk CLI
+                       │
+                       ▼
+             Elastic Beanstalk Service
+                       │
+        ┌──────────────┼───────────────┐
+        │              │               │
+        ▼              ▼               ▼
+   IAM Role      Security Group    Auto Scaling
         │
         ▼
-Elastic Beanstalk
+ Elastic Load Balancer (quando necessário)
         │
         ▼
-EC2
+       EC2
         │
         ▼
-Aplicação Web
+ Amazon Linux
+        │
+        ▼
+ Node.js Runtime
+        │
+        ▼
+ Aplicação Express
 ```
 
-Posteriormente esta arquitetura poderá ser integrada com:
-
-```text
-CodeCommit
-      │
-      ▼
-CodePipeline
-      │
-      ▼
-CodeBuild
-      │
-      ▼
-Elastic Beanstalk
-```
-
----
+------------------------------------------------------------------------
 
 # Pré-requisitos
 
-Instalar:
+-   Node.js
+-   npm
+-   AWS CLI
+-   EB CLI
 
-- Node.js
-- npm
-- AWS CLI
-- EB CLI (Elastic Beanstalk CLI)
+Verifique:
 
-Verificar a instalação:
-
-```bash
+``` bash
 node -v
 npm -v
 aws --version
 eb --version
 ```
 
----
+------------------------------------------------------------------------
 
-# Etapa 1 - Criar o projeto
+# Criando o projeto
 
-Criar a pasta do projeto.
-
-```bash
+``` bash
 mkdir nodejs-example-express-rds
-```
-
-Entrar na pasta.
-
-```bash
 cd nodejs-example-express-rds
-```
-
-Inicializar o projeto Node.
-
-```bash
 npm init -y
-```
-
----
-
-# Etapa 2 - Instalar o Express
-
-```bash
 npm install express
 ```
 
----
+Crie o arquivo `server.js`:
 
-# Etapa 3 - Criar o arquivo da aplicação
-
-Criar o arquivo:
-
-```text
-server.js
-```
-
-Conteúdo:
-
-```javascript
+``` javascript
 const express = require('express');
 
 const app = express();
@@ -121,211 +94,126 @@ app.listen(PORT, () => {
 });
 ```
 
----
+Atualize o `package.json`:
 
-# Etapa 4 - Configurar o package.json
-
-Adicionar o script de inicialização.
-
-```json
+``` json
 "scripts": {
-    "start": "node server.js"
+  "start": "node server.js"
 }
 ```
 
-Exemplo:
+Teste localmente:
 
-```json
-{
-  "name": "nodejs-example-express-rds",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-
-  "scripts": {
-    "start": "node server.js"
-  },
-
-  "dependencies": {
-    "express": "^5.1.0"
-  }
-}
-```
-
----
-
-# Etapa 5 - Testar localmente
-
-Executar:
-
-```bash
+``` bash
 npm start
 ```
 
-Abrir:
+Acesse:
 
-```
+``` text
 http://localhost:8080
 ```
 
-Resultado esperado:
+------------------------------------------------------------------------
 
-```
-Hello Elastic Beanstalk!
-```
+# Inicializando o Elastic Beanstalk
 
----
-
-# Estrutura do projeto
-
-```text
-nodejs-example-express-rds
-│
-├── package.json
-├── package-lock.json
-├── server.js
-└── node_modules/
-```
-
----
-
-# Etapa 6 - Inicializar o Elastic Beanstalk
-
-Executar:
-
-```bash
+``` bash
 eb init
 ```
 
-Informar:
+Informe:
 
-## Região
+-   Região: `us-east-1`
+-   Nome da aplicação: `nodejs-example`
+-   Plataforma: `Node.js`
 
-```
-us-east-1
-```
+------------------------------------------------------------------------
 
-## Nome da aplicação
+# Criando o ambiente
 
-```
-nodejs-example
-```
-
-## Plataforma
-
-```
-Node.js
-```
-
-Após a configuração será criada a pasta:
-
-```text
-.elasticbeanstalk/
-```
-
----
-
-# Estrutura após o eb init
-
-```text
-nodejs-example-express-rds
-│
-├── .elasticbeanstalk/
-├── node_modules/
-├── package.json
-├── package-lock.json
-└── server.js
-```
-
----
-
-# Etapa 7 - Criar o ambiente
-
-Executar:
-
-```bash
+``` bash
 eb create nodejs-env
 ```
 
-O Elastic Beanstalk criará automaticamente:
+O Elastic Beanstalk cria automaticamente:
 
-- EC2
-- Security Group
-- IAM Role
-- Auto Scaling Group
-- Elastic Load Balancer (quando necessário)
+-   EC2
+-   Security Group
+-   IAM Role
+-   Auto Scaling Group
+-   Elastic Load Balancer (quando necessário)
+-   CloudWatch
+-   Bucket S3
 
----
+------------------------------------------------------------------------
 
-# Etapa 8 - Abrir a aplicação
+# Deploy
 
-Executar:
-
-```bash
-eb open
-```
-
-Será aberta uma URL semelhante a:
-
-```
-http://nodejs-env.us-east-1.elasticbeanstalk.com
-```
-
----
-
-# Comandos úteis
-
-Verificar o status:
-
-```bash
-eb status
-```
-
-Visualizar os logs:
-
-```bash
-eb logs
-```
-
-Publicar uma nova versão:
-
-```bash
+``` bash
 eb deploy
 ```
 
-Abrir a aplicação:
+Fluxo:
 
-```bash
+``` text
+Código
+   │
+   ▼
+Upload para S3
+   │
+   ▼
+Elastic Beanstalk
+   │
+   ▼
+EC2
+   │
+   ▼
+npm install
+   │
+   ▼
+npm start
+   │
+   ▼
+Aplicação publicada
+```
+
+------------------------------------------------------------------------
+
+# Acessando a aplicação
+
+``` bash
 eb open
 ```
 
-Encerrar o ambiente:
+Ou obtenha o IP público da EC2 em:
 
-```bash
+Elastic Beanstalk → Environment → Resources → EC2 Instance
+
+------------------------------------------------------------------------
+
+# Comandos úteis
+
+``` bash
+eb status
+eb logs
+eb deploy
+eb open
 eb terminate
 ```
 
----
+------------------------------------------------------------------------
 
-# Fluxo completo
+# Evolução
 
-```text
-Criar aplicação
+``` text
+GitHub / CodeCommit
         │
         ▼
-npm install
+CodePipeline
         │
         ▼
-npm start
-        │
-        ▼
-Teste Local
-        │
-        ▼
-eb init
-        │
-        ▼
-eb create
+CodeBuild
         │
         ▼
 Elastic Beanstalk
@@ -334,66 +222,18 @@ Elastic Beanstalk
 EC2
         │
         ▼
-Aplicação Publicada
+Aplicação publicada
 ```
 
----
+------------------------------------------------------------------------
 
-# Próxima evolução
+# Próximo laboratório
 
-Após validar o deploy manual, é possível automatizar todo o processo utilizando CI/CD.
+AWS CodeDeploy com:
 
-```text
-Git Push
-      │
-      ▼
-CodeCommit
-      │
-      ▼
-CodePipeline
-      │
-      ▼
-CodeBuild
-      │
-      ▼
-Elastic Beanstalk
-      │
-      ▼
-Aplicação Atualizada
-```
-
----
-
-# Resumo dos principais comandos
-
-| Comando | Função |
-|----------|--------|
-| `npm init -y` | Inicializa o projeto Node.js |
-| `npm install express` | Instala o Express |
-| `npm start` | Executa a aplicação localmente |
-| `eb init` | Configura o projeto para o Elastic Beanstalk |
-| `eb create` | Cria um ambiente no Elastic Beanstalk |
-| `eb status` | Exibe o status do ambiente |
-| `eb logs` | Obtém os logs da aplicação |
-| `eb deploy` | Publica uma nova versão da aplicação |
-| `eb open` | Abre a URL da aplicação |
-| `eb terminate` | Remove o ambiente do Elastic Beanstalk | 
-
-```test
-Seu código
-      │
-      ▼
-Elastic Beanstalk
-      │
-      ▼
-Cria uma EC2
-      │
-      ▼
-Instala Node.js
-      │
-      ▼
-Executa sua aplicação
-      │
-      ▼
-Disponibiliza uma URL pública
-```
+-   appspec.yml
+-   Hooks
+-   BeforeInstall
+-   AfterInstall
+-   ApplicationStart
+-   ValidateService
