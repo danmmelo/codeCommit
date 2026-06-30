@@ -1,0 +1,38 @@
+version: 0.2
+
+phases:
+
+  install:
+    commands:
+      - echo "========== INSTALL =========="
+      - echo "Node version:"
+      - node -v
+      - echo "NPM version:"
+      - npm -v
+      - echo "Installing dependencies..."
+      - npm install
+
+  pre_build:
+    commands:
+      - echo "========== PRE BUILD =========="
+      - echo "Checking project structure..."
+      - ls -la
+      - test -f package.json
+      - test -f server.js
+      - test -f appspec.yml
+
+  build:
+    commands:
+      - echo "========== BUILD =========="
+      - echo "Application ready for deployment."
+
+  post_build:
+    commands:
+      - echo "========== POST BUILD =========="
+      - echo "Build completed successfully."
+
+artifacts:
+  files:
+    - '**/*'
+
+  discard-paths: no
