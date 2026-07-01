@@ -19,6 +19,7 @@ phases:
       - ls -la
       - test -f package.json
       - test -f server.js
+      - ls -la scripts
       - test -f appspec.yml
 
   build:
