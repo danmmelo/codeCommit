@@ -19,7 +19,7 @@ phases:
       - ls -la
       - test -f package.json
       - test -f server.js
-      - ls -la scripts
+      - test -d scripts
       - test -f appspec.yml
 
   build:
@@ -30,6 +30,8 @@ phases:
   post_build:
     commands:
       - echo "========== POST BUILD =========="
+      - echo "Removing node_modules from deployment artifact..."
+      - rm -rf node_modules
       - echo "Build completed successfully."
 
 artifacts:
