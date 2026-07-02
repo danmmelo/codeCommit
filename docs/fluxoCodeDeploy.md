@@ -232,3 +232,27 @@ nodejs-example-express-rds/
 - Facilita troubleshooting.
 - Estrutura semelhante à utilizada em ambientes corporativos.
 - Processo de deploy totalmente automatizado.
+
+```text
+GitHub
+   │
+   ▼
+Source (GitHub)
+   │
+   │  gera o SourceArtifact
+   ▼
+CodeBuild
+   │
+   │  recebe o SourceArtifact
+   │  executa o buildspec.yml
+   │
+   ▼
+gera o BuildArtifact
+   │
+   ▼
+CodeDeploy
+   │
+   ▼
+EC2
+
+```

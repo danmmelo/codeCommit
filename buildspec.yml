@@ -30,12 +30,27 @@ phases:
   post_build:
     commands:
       - echo "========== POST BUILD =========="
+      - echo "===== APPSPEC ====="
+      - cat appspec.yml
+
+      - echo "===== APPLICATION_STOP ====="
+      - cat scripts/application_stop.sh
+
+      - echo "===== GIT COMMIT ====="
+      - git rev-parse HEAD || true
+
+      - echo "===== FILES ====="
+      - ls -la
+
       - echo "Removing node_modules from deployment artifact..."
       - rm -rf node_modules
+
+      - echo "===== FILES AFTER REMOVE ====="
+      - ls -la
+
       - echo "Build completed successfully."
 
 artifacts:
   files:
     - '**/*'
-
   discard-paths: no
