@@ -1,14 +1,19 @@
 #!/bin/bash
 
+set -e
+
 echo "==============================="
-echo "BeforeInstall"
+echo "AfterInstall"
 echo "==============================="
 
-bash scripts/validate_environment.sh
+cd /home/ec2-user/nodejs-app
 
-echo "Parando aplicação antiga..."
-pkill node || true
+echo "Instalando dependências..."
 
-mkdir -p /home/ec2-user/nodejs-app
+npm install
 
-echo "BeforeInstall finalizado."
+echo "Verificando Express..."
+
+npm list express
+
+echo "AfterInstall concluído."
