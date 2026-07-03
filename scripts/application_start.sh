@@ -3,17 +3,38 @@
 set -e
 
 echo "==============================="
-echo "AfterInstall"
+echo "ApplicationStart"
 echo "==============================="
 
-cd /home/ec2-user/nodejs-app
+APP_DIR="/home/ec2-user/nodejs-app"
 
-echo "Instalando dependências Node..."
+cd $APP_DIR
 
-npm install
+echo "Diretório atual:"
+pwd
 
-echo "Verificando Express..."
+echo "Parando qualquer processo Node antigo..."
+pkill -f "node server.js" || true
 
-npm list express
+echo "Iniciando aplicação..."
 
-echo "AfterInstall concluído."
+nohup npm start > app.log 2>&1 &
+
+echo "Aguardando aplicação iniciar..."
+sleep 10
+
+echo "Verificando processo..."
+
+if pgrep -f "node server.js" > /dev/null
+then
+    echo "✔ Aplicação iniciada com sucesso."
+else
+    echo "✘ Aplicação não iniciou."
+    echo "===== app.log ====="
+    cat app.log
+    exit 1
+fi
+
+echo "==============================="
+echo "ApplicationStart finalizado"
+echo "==============================="
