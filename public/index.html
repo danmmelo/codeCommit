@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicação Node.js</title>
+
+    <style>
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            background:#f4f4f4;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            margin:0;
+        }
+
+        .card{
+            background:white;
+            padding:30px;
+            border-radius:10px;
+            box-shadow:0 0 10px rgba(0,0,0,.2);
+            width:420px;
+        }
+
+        h1{
+            color:#0070f3;
+        }
+
+        p{
+            font-size:18px;
+        }
+
+        strong{
+            color:#333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Aplicação Node.js</h1>
+
+    <p><strong>Status:</strong> <span id="status"></span></p>
+    <p><strong>Aplicação:</strong> <span id="application"></span></p>
+    <p><strong>Porta:</strong> <span id="port"></span></p>
+    <p><strong>Ambiente:</strong> <span id="environment"></span></p>
+    <p><strong>Horário do servidor:</strong> <span id="serverTime"></span></p>
+</div>
+
+<script>
+async function carregarDados(){
+
+    const resposta = await fetch('/api');
+    const dados = await resposta.json();
+
+    document.getElementById('status').textContent = dados.status;
+    document.getElementById('application').textContent = dados.application;
+    document.getElementById('port').textContent = dados.port;
+    document.getElementById('environment').textContent = dados.environment;
+    document.getElementById('serverTime').textContent = dados.serverTime;
+}
+
+carregarDados();
+</script>
+
+</body>
+</html>
