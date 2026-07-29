@@ -47,6 +47,10 @@ phases:
 
       - echo "===== FILES AFTER REMOVE ====="
       - ls -la
+      
+      - echo "===== PUBLIC FOLDER ====="
+      - find public -type f
+
 
       - echo "Build completed successfully."
 
