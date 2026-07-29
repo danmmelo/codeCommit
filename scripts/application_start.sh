@@ -24,19 +24,12 @@ echo "Iniciando aplicação..."
 
 nohup npm start > "$LOG_DIR/app.log" 2>&1 &
 
-APP_PID=$!
-
-echo $APP_PID > app.pid
-
-echo "PID: $APP_PID"
-
 echo "Aguardando aplicação iniciar..."
-
 sleep 10
 
 echo "Validando aplicação..."
 
-if ! ps -p $APP_PID > /dev/null
+if ! pgrep -f "node server.js" > /dev/null
 then
     echo "✘ Aplicação não iniciou."
 
@@ -46,6 +39,10 @@ then
 
     exit 1
 fi
+
+echo "PID da aplicação:"
+pgrep -f "node server.js" | head -1 > app.pid
+cat app.pid
 
 echo "✔ Aplicação iniciada com sucesso."
 
