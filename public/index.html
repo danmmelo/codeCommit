@@ -3,66 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplicação Node.js</title>
+    <title>AWS Secure Inventory</title>
 
     <style>
+
         body{
             font-family: Arial, Helvetica, sans-serif;
             background:#f4f4f4;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-            margin:0;
+            margin:40px;
         }
 
         .card{
+
             background:white;
+
             padding:30px;
+
             border-radius:10px;
+
             box-shadow:0 0 10px rgba(0,0,0,.2);
-            width:420px;
+
+            max-width:700px;
+
+            margin:auto;
+
+            margin-bottom:30px;
+
         }
 
-        h1{
+        h1,h2{
+
             color:#0070f3;
+
         }
 
-        p{
-            font-size:18px;
+        input{
+
+            width:100%;
+
+            padding:10px;
+
+            margin-top:10px;
+
+            margin-bottom:20px;
+
         }
 
-        strong{
-            color:#333;
+        button{
+
+            background:#0070f3;
+
+            color:white;
+
+            border:none;
+
+            padding:12px 20px;
+
+            cursor:pointer;
+
+            border-radius:5px;
+
         }
+
+        button:hover{
+
+            background:#0059c9;
+
+        }
+
+        pre{
+
+            background:#272822;
+
+            color:#00ff7f;
+
+            padding:15px;
+
+            border-radius:8px;
+
+            overflow:auto;
+
+        }
+
     </style>
+
 </head>
+
 <body>
 
 <div class="card">
-    <h1>Aplicação Node.js</h1>
+
+    <h1>AWS Secure Inventory Portal</h1>
+
+    <h2>Health Check</h2>
 
     <p><strong>Status:</strong> <span id="status"></span></p>
+
     <p><strong>Aplicação:</strong> <span id="application"></span></p>
+
     <p><strong>Porta:</strong> <span id="port"></span></p>
+
     <p><strong>Ambiente:</strong> <span id="environment"></span></p>
+
     <p><strong>Horário do servidor:</strong> <span id="serverTime"></span></p>
+
 </div>
 
+
+<div class="card">
+
+    <h2>AWS Systems Manager - Parameter Store</h2>
+
+    <label>Nome do parâmetro</label>
+
+    <input
+        id="parameterName"
+        type="text"
+        value="/inventory-service/prod/db/password"
+    >
+
+    <button onclick="getParameter()">
+
+        Buscar Parâmetro
+
+    </button>
+
+    <h3>Resultado</h3>
+
+    <pre id="result"></pre>
+
+</div>
+
+
 <script>
+
 async function carregarDados(){
 
-    const resposta = await fetch('/api');
+    const resposta = await fetch("/api");
+
     const dados = await resposta.json();
 
-    document.getElementById('status').textContent = dados.status;
-    document.getElementById('application').textContent = dados.application;
-    document.getElementById('port').textContent = dados.port;
-    document.getElementById('environment').textContent = dados.environment;
-    document.getElementById('serverTime').textContent = dados.serverTime;
+    document.getElementById("status").textContent =
+        dados.status;
+
+    document.getElementById("application").textContent =
+        dados.application;
+
+    document.getElementById("port").textContent =
+        dados.port;
+
+    document.getElementById("environment").textContent =
+        dados.environment;
+
+    document.getElementById("serverTime").textContent =
+        dados.serverTime;
+
+}
+
+
+async function getParameter(){
+
+    const parameterName =
+
+        document.getElementById("parameterName").value;
+
+    try{
+
+        const response = await fetch(
+
+            "/ssm/parameter?name=" +
+
+            encodeURIComponent(parameterName)
+
+        );
+
+        const data = await response.json();
+
+        document.getElementById("result").textContent =
+
+            JSON.stringify(
+
+                data,
+
+                null,
+
+                4
+
+            );
+
+    }
+
+    catch(error){
+
+        document.getElementById("result").textContent =
+
+            error.message;
+
+    }
+
 }
 
 carregarDados();
+
 </script>
 
 </body>

@@ -1,11 +1,35 @@
 #!/bin/bash
 
+set -e
+
 echo "==============================="
 echo "ApplicationStop"
 echo "==============================="
 
-echo "Verificando aplicação Node.js..."
+APP_DIR="/home/ec2-user/nodejs-app"
 
-pkill -f node || true
+cd "$APP_DIR" || exit 0
 
-echo "Aplicação encerrada."
+if [ -f app.pid ]; then
+
+    PID=$(cat app.pid)
+
+    echo "Parando aplicação (PID: $PID)..."
+
+    kill "$PID" || true
+
+    rm -f app.pid
+
+    echo "Aplicação encerrada."
+
+else
+
+    echo "Arquivo app.pid não encontrado."
+
+    pkill -f "node server.js" || true
+
+fi
+
+echo "==============================="
+echo "ApplicationStop finalizado"
+echo "==============================="

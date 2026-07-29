@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  adot-collector:
+    image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+
+    container_name: adot-collector
+
+    command:
+      - "--config=/etc/otel/config.yaml"
+
+    volumes:
+      - ${HOME}/.aws:/home/aoc/.aws:ro
+      - ./collector/adot-config.yaml:/etc/otel/config.yaml
+
+    environment:
+      AWS_REGION: us-east-1
+      AWS_SDK_LOAD_CONFIG: "1"
+      HOME: /home/aoc
+            
+    ports:
+      - "4318:4318"
+
+    restart: unless-stopped

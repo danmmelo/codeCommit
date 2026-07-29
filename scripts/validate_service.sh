@@ -1,20 +1,39 @@
 #!/bin/bash
 
-sleep 10
+set -e
 
-curl http://localhost:8080
+echo "==============================="
+echo "ValidateService"
+echo "==============================="
 
-if [ $? -eq 0 ]
-then
+URL="http://localhost:8080/health"
 
-    echo "Aplicação funcionando."
+echo "Validando aplicação..."
 
-    exit 0
+for i in {1..15}
+do
 
-else
+    STATUS=$(curl -o /dev/null -s -w "%{http_code}" "$URL" || true)
 
-    echo "Aplicação não respondeu."
+    if [ "$STATUS" = "200" ]; then
 
-    exit 1
+        echo "✔ Aplicação funcionando."
 
-fi
+        exit 0
+
+    fi
+
+    echo "Tentativa $i: aplicação ainda não respondeu."
+
+    sleep 2
+
+done
+
+echo ""
+echo "✘ Aplicação não respondeu."
+
+echo "===== Últimas linhas do log ====="
+
+tail -50 /home/ec2-user/nodejs-app/logs/app.log || true
+
+exit 1

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 echo "==============================="
 echo "BeforeInstall"
 echo "==============================="
@@ -9,25 +11,19 @@ APP_DIR="/home/ec2-user/nodejs-app"
 echo "Validando ambiente..."
 bash scripts/validate_environment.sh
 
-echo "Parando aplicação antiga..."
-pkill node || true
+echo "Parando aplicação..."
+pkill -f server.js || true
 
-echo "Criando diretório da aplicação..."
-sudo mkdir -p "$APP_DIR"
+echo "Criando diretório..."
 
-echo "Removendo arquivos da implantação anterior..."
+mkdir -p "$APP_DIR"
 
-sudo rm -rf "$APP_DIR/node_modules"
-sudo rm -rf "$APP_DIR/package-lock.json"
-sudo rm -rf "$APP_DIR/package.json"
-sudo rm -rf "$APP_DIR/server.js"
-sudo rm -rf "$APP_DIR/scripts"
-sudo rm -rf "$APP_DIR/docs"
-sudo rm -rf "$APP_DIR/.elasticbeanstalk"
-sudo rm -rf "$APP_DIR/README.md"
-sudo rm -rf "$APP_DIR/buildspec.yml"
-sudo rm -rf "$APP_DIR/appspec.yml"
+echo "Limpando implantação anterior..."
 
-echo "Diretório limpo."
+find "$APP_DIR" \
+    -mindepth 1 \
+    -maxdepth 1 \
+    ! -name ".env" \
+    -exec rm -rf {} +
 
 echo "BeforeInstall finalizado."

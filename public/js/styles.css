@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AWS Secure Inventory Portal - Secrets Manager</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>AWS Secure Inventory Portal</h1>
+
+        <p>Secrets Manager Administration</p>
+
+    </header>
+
+    <main>
+
+        <!-- ================= CREATE ================= -->
+
+        <section class="card">
+
+            <h2>Create Secret</h2>
+
+            <label>Secret Name</label>
+
+            <input
+                type="text"
+                id="createName"
+                placeholder="lab/database">
+
+            <label>Username</label>
+
+            <input
+                type="text"
+                id="createUsername"
+                placeholder="admin">
+
+            <label>Password</label>
+
+            <input
+                type="password"
+                id="createPassword"
+                placeholder="Password123!">
+
+            <button id="createSecretButton">
+
+                Create Secret
+
+            </button>
+
+        </section>
+
+        <!-- ================= SEARCH ================= -->
+
+        <section class="card">
+
+            <h2>Search Secret</h2>
+
+            <label>Secret Name</label>
+
+            <input
+                type="text"
+                id="searchName"
+                placeholder="lab/database">
+
+            <button id="searchSecretButton">
+
+                Search
+
+            </button>
+
+            <pre id="searchResult"></pre>
+
+        </section>
+
+        <!-- ================= UPDATE ================= -->
+
+        <section class="card">
+
+            <h2>Update Secret</h2>
+
+            <label>Secret Name</label>
+
+            <input
+                type="text"
+                id="updateName"
+                placeholder="lab/database">
+
+            <label>Username</label>
+
+            <input
+                type="text"
+                id="updateUsername">
+
+            <label>Password</label>
+
+            <input
+                type="password"
+                id="updatePassword">
+
+            <button id="updateSecretButton">
+
+                Update Secret
+
+            </button>
+
+        </section>
+
+        <!-- ================= DELETE ================= -->
+
+        <section class="card">
+
+            <h2>Delete Secret</h2>
+
+            <label>Secret Name</label>
+
+            <input
+                type="text"
+                id="deleteName"
+                placeholder="lab/database">
+
+            <button id="deleteSecretButton">
+
+                Delete Secret
+
+            </button>
+
+        </section>
+
+        <!-- ================= LIST ================= -->
+
+        <section class="card">
+
+            <h2>Secrets</h2>
+
+            <button id="listSecretsButton">
+
+                Refresh List
+
+            </button>
+
+            <ul id="secretList">
+
+            </ul>
+
+        </section>
+
+    </main>
+
+    <script src="js/secrets.js"></script>
+
+</body>
+
+</html>

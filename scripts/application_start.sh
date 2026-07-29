@@ -7,33 +7,47 @@ echo "ApplicationStart"
 echo "==============================="
 
 APP_DIR="/home/ec2-user/nodejs-app"
+LOG_DIR="$APP_DIR/logs"
 
-cd $APP_DIR
+cd "$APP_DIR"
 
 echo "Diretório atual:"
 pwd
 
-echo "Parando qualquer processo Node antigo..."
+echo "Criando diretório de logs..."
+mkdir -p "$LOG_DIR"
+
+echo "Parando aplicação anterior..."
 pkill -f "node server.js" || true
 
 echo "Iniciando aplicação..."
 
-nohup npm start > app.log 2>&1 &
+nohup npm start > "$LOG_DIR/app.log" 2>&1 &
+
+APP_PID=$!
+
+echo $APP_PID > app.pid
+
+echo "PID: $APP_PID"
 
 echo "Aguardando aplicação iniciar..."
+
 sleep 10
 
-echo "Verificando processo..."
+echo "Validando aplicação..."
 
-if pgrep -f "node server.js" > /dev/null
+if ! ps -p $APP_PID > /dev/null
 then
-    echo "✔ Aplicação iniciada com sucesso."
-else
     echo "✘ Aplicação não iniciou."
-    echo "===== app.log ====="
-    cat app.log
+
+    echo ""
+    echo "===== Últimas linhas do log ====="
+    tail -50 "$LOG_DIR/app.log"
+
     exit 1
 fi
+
+echo "✔ Aplicação iniciada com sucesso."
 
 echo "==============================="
 echo "ApplicationStart finalizado"

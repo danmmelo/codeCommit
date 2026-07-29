@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AWS Secure Inventory Portal</title>
+
+    <style>
+        body {
+
+            font-family: Arial, Helvetica, sans-serif;
+
+            background: #f4f4f4;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            height: 100vh;
+
+            margin: 0;
+
+        }
+
+        .card {
+
+            width: 400px;
+
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 10px;
+
+            box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+
+        }
+
+        h1 {
+
+            text-align: center;
+
+            color: #0070f3;
+
+        }
+
+        input {
+
+            width: 100%;
+
+            padding: 12px;
+
+            margin-top: 10px;
+
+            margin-bottom: 20px;
+
+            box-sizing: border-box;
+
+        }
+
+        button {
+
+            width: 100%;
+
+            padding: 12px;
+
+            border: none;
+
+            background: #0070f3;
+
+            color: white;
+
+            cursor: pointer;
+
+            border-radius: 5px;
+
+            font-size: 16px;
+
+        }
+
+        button:hover {
+
+            background: #0056d6;
+
+        }
+
+        pre {
+
+            background: #272822;
+
+            color: #00ff7f;
+
+            padding: 10px;
+
+            margin-top: 20px;
+
+            overflow: auto;
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="card">
+
+        <h1>AWS Secure Inventory Portal</h1>
+
+        <label>Email</label>
+
+        <input type="email" id="username" placeholder="daniele@email.com">
+
+        <label>Senha</label>
+
+        <input type="password" id="password" placeholder="********">
+
+        <button onclick="login()">
+
+            Entrar
+
+        </button>
+
+        <pre id="result"></pre>
+
+    </div>
+
+    <script>
+
+        async function login() {
+
+            const username =
+                document.getElementById("username").value;
+
+            const password =
+                document.getElementById("password").value;
+
+            try {
+
+                const response = await fetch(
+
+                    "/auth/login",
+
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type": "application/json"
+
+                        },
+
+                        body: JSON.stringify({
+
+                            username,
+
+                            password
+
+                        })
+
+                    }
+
+                );
+
+                const data = await response.json();
+
+                if (data.challenge === "NEW_PASSWORD_REQUIRED") {
+
+                    localStorage.setItem("cognitoSession", data.session);
+
+                    localStorage.setItem("username", username);
+
+                    window.location.href = "/change-password.html";
+
+                    return;
+
+                }
+                if (data.success) {
+
+                    localStorage.setItem(
+                        "accessToken",
+                        data.tokens.AccessToken
+                    );
+
+                    localStorage.setItem(
+                        "idToken",
+                        data.tokens.IdToken
+                    );
+
+                    localStorage.setItem(
+                        "refreshToken",
+                        data.tokens.RefreshToken
+                    );
+
+                    window.location.href = "/dashboard.html";
+
+
+                } else {
+
+                    alert(data.message);
+
+                    document.getElementById("result").textContent =
+
+                        JSON.stringify(
+
+                            data,
+
+                            null,
+
+                            4
+
+                        );
+
+                }
+
+
+
+            }
+
+            catch (error) {
+
+                document.getElementById("result").textContent =
+
+                    error.message;
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>
