@@ -24,7 +24,6 @@ check_package git
 check_package wget
 check_package unzip
 check_package ruby
-check_package java
 check_package node
 check_package npm
 check_package aws
@@ -35,7 +34,6 @@ echo "Versões"
 node -v
 npm -v
 git --version
-java -version
 ruby --version
 aws --version
 
