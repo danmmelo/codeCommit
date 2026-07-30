@@ -11,6 +11,7 @@ phases:
       - npm -v
       - echo "Installing dependencies..."
       - npm install
+      - npm test
 
   pre_build:
     commands:

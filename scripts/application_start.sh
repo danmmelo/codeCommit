@@ -1,51 +1,31 @@
-#!/bin/bash
-
-set -e
-
-echo "==============================="
-echo "ApplicationStart"
-echo "==============================="
-
-APP_DIR="/home/ec2-user/nodejs-app"
-LOG_DIR="$APP_DIR/logs"
-
-cd "$APP_DIR"
-
-echo "Diretório atual:"
-pwd
-
-echo "Criando diretório de logs..."
-mkdir -p "$LOG_DIR"
-
-echo "Parando aplicação anterior..."
-pkill -f "node server.js" || true
-
-echo "Iniciando aplicação..."
-
-nohup npm start > "$LOG_DIR/app.log" 2>&1 &
-
-echo "Aguardando aplicação iniciar..."
-sleep 10
-
 echo "Validando aplicação..."
 
-if ! pgrep -f "node server.js" > /dev/null
-then
-    echo "✘ Aplicação não iniciou."
+for i in {1..30}
+do
+    if curl -fs http://localhost:8080/health > /dev/null
+    then
+        echo "✔ Aplicação respondeu no endpoint /health"
 
-    echo ""
-    echo "===== Últimas linhas do log ====="
-    tail -50 "$LOG_DIR/app.log"
+        pgrep -f "node server.js" | head -1 > app.pid
 
-    exit 1
-fi
+        echo "PID:"
+        cat app.pid
 
-echo "PID da aplicação:"
-pgrep -f "node server.js" | head -1 > app.pid
-cat app.pid
+        echo "==============================="
+        echo "ApplicationStart finalizado"
+        echo "==============================="
 
-echo "✔ Aplicação iniciada com sucesso."
+        exit 0
+    fi
 
-echo "==============================="
-echo "ApplicationStart finalizado"
-echo "==============================="
+    echo "Tentativa $i de 30..."
+    sleep 2
+done
+
+echo "✘ Aplicação não respondeu no endpoint /health"
+
+echo ""
+echo "===== Últimas linhas do log ====="
+tail -50 "$LOG_DIR/app.log"
+
+exit 1
