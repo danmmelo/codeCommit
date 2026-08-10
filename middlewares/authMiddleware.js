@@ -1,9 +1,11 @@
-module.exports = function authMiddleware(req, res, next) {
-  const gatewaySecret = req.headers["x-gateway-secret"];
+module.exports = function createAuthMiddleware(secret) {
+  return function authMiddleware(req, res, next) {
+    const gatewaySecret = req.headers["x-gateway-secret"];
 
-  if (gatewaySecret !== process.env.GATEWAY_SECRET) {
-    return res.status(403).json({ success: false, message: "Forbidden" });
-  }
+    if (gatewaySecret !== secret) {
+      return res.status(403).json({ success: false, message: "Forbidden" });
+    }
 
-  next();
+    next();
+  };
 };

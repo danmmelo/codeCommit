@@ -10,7 +10,8 @@ const app = express();
 
 const PORT = process.env.PORT || 8080;
 
-const authMiddleware = require("./middlewares/authMiddleware");
+const { getParameter } = require("./services/parameterStore");
+const createAuthMiddleware = require("./middlewares/authMiddleware");
 
 // ======================================================
 // Servidor iniciado
@@ -74,7 +75,7 @@ app.use("/auth", authRoutes);
 // Health Check
 // ======================================================
 
-app.use("/secrets", authMiddleware, secretRoutes);
+//app.use("/secrets", authMiddleware, secretRoutes);
 
 app.get("/api", (req, res) => {
 
@@ -117,12 +118,20 @@ app.get("/health", (req, res) => {
 // Start Server
 // ======================================================
 
-app.listen(PORT, () => {
+async function startServer() {
+  const gatewaySecretParam = await getParameter(
+    "/inventory-service/prod/api-gateway/gateway-secret",
+    true
+  );
 
+  const authMiddleware = createAuthMiddleware(gatewaySecretParam.Value);
+
+  app.use("/secrets", authMiddleware, secretRoutes);
+
+  app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
+  });
+}
 
+startServer();
 
-
-
-
-});
