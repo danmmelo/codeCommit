@@ -10,6 +10,8 @@ const app = express();
 
 const PORT = process.env.PORT || 8080;
 
+const authMiddleware = require("./middlewares/authMiddleware");
+
 // ======================================================
 // Servidor iniciado
 // ======================================================
@@ -72,7 +74,7 @@ app.use("/auth", authRoutes);
 // Health Check
 // ======================================================
 
-app.use("/secrets", secretRoutes);
+app.use("/secrets", authMiddleware, secretRoutes);
 
 app.get("/api", (req, res) => {
 
