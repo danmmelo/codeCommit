@@ -1,6 +1,5 @@
 const cognitoService = require("../services/cognitoService");
-const logger = require("../observability/logger");
-
+const logger = require("../logger/logger");
 /*
 ===============================================================================
 
