@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const secretsService = require("../services/secretsService");
+const sqsService = require("../services/sqsService");
 
 /*
 ===============================================================================
@@ -60,6 +61,16 @@ router.post("/", async (req, res) => {
             value
 
         );
+
+        try {
+
+            await sqsService.sendSecretCreatedMessage(name);
+
+        } catch (sqsError) {
+
+            console.error("Falha ao enviar mensagem para SQS:", sqsError.message);
+
+        }
 
         res.json({
 
