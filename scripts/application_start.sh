@@ -6,7 +6,7 @@ do
     then
         echo "✔ Aplicação respondeu no endpoint /health"
 
-        pgrep -f "node server.js" | head -1 > app.pid
+        pgrep -nf "node server.js" > app.pid
 
         echo "PID:"
         cat app.pid
