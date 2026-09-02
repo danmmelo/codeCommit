@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const secretsService = require("../services/secretsService");
-const sqsService = require("../services/sqsService");
+const snsService = require("../services/snsService");
 
 /*
 ===============================================================================
@@ -64,11 +64,11 @@ router.post("/", async (req, res) => {
 
         try {
 
-            await sqsService.sendSecretCreatedMessage(name);
+            await snsService.publishSecretCreatedMessage(name);
 
-        } catch (sqsError) {
+        } catch (snsError) {
 
-            console.error("Falha ao enviar mensagem para SQS:", sqsError.message);
+            console.error("Falha ao publicar mensagem no SNS:", snsError.message);
 
         }
 
