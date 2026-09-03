@@ -4,6 +4,7 @@ const router = express.Router();
 
 const secretsService = require("../services/secretsService");
 const snsService = require("../services/snsService");
+const eventBridgeService = require("../services/eventBridgeService");
 
 /*
 ===============================================================================
@@ -235,6 +236,16 @@ router.delete("/secret", async (req, res) => {
             name
 
         );
+
+        try {
+
+            await eventBridgeService.publishSecretDeletedEvent(name);
+
+        } catch (ebError) {
+
+            console.error("Falha ao publicar evento no EventBridge:", ebError.message);
+
+        }
 
         res.json({
 

@@ -14,6 +14,7 @@ AWS_REGION=us-east-1
 COGNITO_SECRET_NAME=lab/cognito
 SQS_QUEUE_URL_PARAM=/inventory-service/prod/sqs/secret-created-queue-url
 SNS_TOPIC_ARN_PARAM=/inventory-service/prod/sns/secret-created-topic-arn
+EVENTBRIDGE_BUS_NAME_PARAM=/inventory-service/prod/eventbridge/bus-name
 EOF
 
 echo ".env gerado pelo deploy:"
