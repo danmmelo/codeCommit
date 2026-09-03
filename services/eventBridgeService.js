@@ -37,7 +37,21 @@ async function publishSecretDeletedEvent(secretName) {
     ],
   });
 
-  return client.send(command);
+  const response = await client.send(command);
+
+  if (response.FailedEntryCount && response.FailedEntryCount > 0) {
+
+    const failedEntry = response.Entries.find((entry) => entry.ErrorCode);
+
+    throw new Error(
+
+      `EventBridge rejeitou o evento: ${failedEntry?.ErrorCode} - ${failedEntry?.ErrorMessage}`
+
+    );
+
+  }
+
+  return response;
 
 }
 
